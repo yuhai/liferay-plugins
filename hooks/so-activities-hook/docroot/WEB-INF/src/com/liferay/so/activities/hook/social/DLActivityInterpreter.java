@@ -28,6 +28,9 @@ import com.liferay.portlet.documentlibrary.model.DLFileEntry;
 import com.liferay.portlet.documentlibrary.service.DLAppLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.util.DLUtil;
 import com.liferay.portlet.social.model.SocialActivity;
+import com.liferay.portlet.social.model.SocialActivitySet;
+import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
+import com.liferay.portlet.social.service.SocialActivitySetLocalServiceUtil;
 
 /**
  * @author Evan Thibodeau
@@ -37,6 +40,39 @@ public class DLActivityInterpreter extends SOSocialActivityInterpreter {
 
 	public String[] getClassNames() {
 		return _CLASS_NAMES;
+	}
+
+	@Override
+	protected long getActivitySetId(long activityId) {
+		try {
+			SocialActivity activity =
+				SocialActivityLocalServiceUtil.getActivity(activityId);
+
+			if (activity.getType() == _ACTIVITY_KEY_ADD_FILE_ENTRY) {
+				SocialActivitySet activitySet =
+					SocialActivitySetLocalServiceUtil.getUserActivitySet(
+						activity.getGroupId(), activity.getUserId(),
+						activity.getType());
+
+				if ((activitySet != null) && !isExpired(activitySet)) {
+					return activitySet.getActivitySetId();
+				}
+			}
+			else if (activity.getType() == _ACTIVITY_KEY_UPDATE_FILE_ENTRY) {
+				SocialActivitySet activitySet =
+					SocialActivitySetLocalServiceUtil.getClassActivitySet(
+						activity.getUserId(), activity.getClassNameId(),
+						activity.getClassPK(), activity.getType());
+
+				if ((activitySet != null) && !isExpired(activitySet)) {
+					return activitySet.getActivitySetId();
+				}
+			}
+		}
+		catch (Exception e) {
+		}
+
+		return 0;
 	}
 
 	@Override
