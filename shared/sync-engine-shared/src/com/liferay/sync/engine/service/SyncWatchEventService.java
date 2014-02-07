@@ -31,19 +31,32 @@ import org.slf4j.LoggerFactory;
 public class SyncWatchEventService {
 
 	public static SyncWatchEvent addSyncWatchEvent(
-			String filePath, String kind, long syncAccountId)
+			String eventType, String filePathName, String fileType,
+			long syncAccountId)
 		throws Exception {
 
 		SyncWatchEvent syncWatchEvent = new SyncWatchEvent();
 
-		syncWatchEvent.setFilePath(filePath);
-		syncWatchEvent.setKind(kind);
+		syncWatchEvent.setEventType(eventType);
+		syncWatchEvent.setFilePathName(filePathName);
+		syncWatchEvent.setFileType(fileType);
 		syncWatchEvent.setSyncAccountId(syncAccountId);
 		syncWatchEvent.setTimestamp(System.currentTimeMillis());
 
 		_syncWatchEventPersistence.create(syncWatchEvent);
 
 		return syncWatchEvent;
+	}
+
+	public static void deleteSyncWatchEvent(long syncWatchEventId) {
+		try {
+			_syncWatchEventPersistence.deleteById(syncWatchEventId);
+		}
+		catch (SQLException sqle) {
+			if (_logger.isDebugEnabled()) {
+				_logger.debug(sqle.getMessage(), sqle);
+			}
+		}
 	}
 
 	public static SyncWatchEvent fetchSyncWatchEvent(long syncWatchEventId) {
@@ -59,9 +72,40 @@ public class SyncWatchEventService {
 		}
 	}
 
+	public static SyncWatchEvent fetchSyncWatchEvent(
+		String eventType, String filePathName, long timestamp) {
+
+		try {
+			return _syncWatchEventPersistence.fetchByE_F_T(
+				eventType, filePathName, timestamp);
+		}
+		catch (SQLException sqle) {
+			if (_logger.isDebugEnabled()) {
+				_logger.debug(sqle.getMessage(), sqle);
+			}
+
+			return null;
+		}
+	}
+
 	public static List<SyncWatchEvent> findAll() {
 		try {
 			return _syncWatchEventPersistence.queryForAll();
+		}
+		catch (SQLException sqle) {
+			if (_logger.isDebugEnabled()) {
+				_logger.debug(sqle.getMessage(), sqle);
+			}
+
+			return Collections.emptyList();
+		}
+	}
+
+	public static List<SyncWatchEvent> findAll(
+		String orderByColumn, boolean ascending) {
+
+		try {
+			return _syncWatchEventPersistence.findAll(orderByColumn, ascending);
 		}
 		catch (SQLException sqle) {
 			if (_logger.isDebugEnabled()) {
