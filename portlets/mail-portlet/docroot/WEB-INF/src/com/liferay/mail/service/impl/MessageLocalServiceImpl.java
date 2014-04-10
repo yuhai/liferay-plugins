@@ -49,50 +49,6 @@ public class MessageLocalServiceImpl extends MessageLocalServiceBaseImpl {
 			String flags, long remoteMessageId)
 		throws PortalException, SystemException {
 
-		String toAddress = StringPool.BLANK;
-		String ccAddress = StringPool.BLANK;
-		String bccAddress = StringPool.BLANK;
-
-		String[] toAddresses = StringUtil.split(to, StringPool.COMMA);
-		String[] ccAddresses = StringUtil.split(cc, StringPool.COMMA);
-		String[] bccAddresses = StringUtil.split(bcc, StringPool.COMMA);
-
-		if (toAddresses.length <= 1) {
-			toAddress = to;
-		}
-		else {
-			for (int i = 0; i < (toAddresses.length - 1); i++) {
-				toAddress +=
-					toAddresses[i] + StringPool.COMMA + StringPool.SPACE;
-			}
-
-			toAddress += toAddresses[toAddresses.length - 1];
-		}
-
-		if (ccAddresses.length <= 1) {
-			ccAddress = cc;
-		}
-		else {
-			for (int i = 0; i < (ccAddresses.length - 1); i++) {
-				ccAddress +=
-					ccAddresses[i] + StringPool.COMMA + StringPool.SPACE;
-			}
-
-			ccAddress += ccAddresses[ccAddresses.length - 1];
-		}
-
-		if (bccAddresses.length <= 1) {
-			bccAddress = bcc;
-		}
-		else {
-			for (int i = 0; i < (bccAddresses.length - 1); i++) {
-				bccAddress +=
-					bccAddresses[i] + StringPool.COMMA + StringPool.SPACE;
-			}
-
-			bccAddress += bccAddresses[bccAddresses.length - 1];
-		}
-
 		// Message
 
 		User user = userPersistence.findByPrimaryKey(userId);
@@ -111,9 +67,9 @@ public class MessageLocalServiceImpl extends MessageLocalServiceBaseImpl {
 		message.setAccountId(folder.getAccountId());
 		message.setFolderId(folderId);
 		message.setSender(sender);
-		message.setTo(toAddress);
-		message.setCc(ccAddress);
-		message.setBcc(bccAddress);
+		message.setTo(formatEmailAddresses(to));
+		message.setCc(formatEmailAddresses(cc));
+		message.setBcc(formatEmailAddresses(bcc));
 		message.setSentDate(sentDate);
 		message.setSubject(subject);
 		message.setPreview(getPreview(body));
@@ -345,50 +301,6 @@ public class MessageLocalServiceImpl extends MessageLocalServiceBaseImpl {
 			String flags, long remoteMessageId)
 		throws PortalException, SystemException {
 
-		String toAddress = StringPool.BLANK;
-		String ccAddress = StringPool.BLANK;
-		String bccAddress = StringPool.BLANK;
-
-		String[] toAddresses = StringUtil.split(to, StringPool.COMMA);
-		String[] ccAddresses = StringUtil.split(cc, StringPool.COMMA);
-		String[] bccAddresses = StringUtil.split(bcc, StringPool.COMMA);
-
-		if (toAddresses.length <= 1) {
-			toAddress = to;
-		}
-		else {
-			for (int i = 0; i < (toAddresses.length - 1); i++) {
-				toAddress +=
-					toAddresses[i] + StringPool.COMMA + StringPool.SPACE;
-			}
-
-			toAddress += toAddresses[toAddresses.length - 1];
-		}
-
-		if (ccAddresses.length <= 1) {
-			ccAddress = cc;
-		}
-		else {
-			for (int i = 0; i < (ccAddresses.length - 1); i++) {
-				ccAddress +=
-					ccAddresses[i] + StringPool.COMMA + StringPool.SPACE;
-			}
-
-			ccAddress += ccAddresses[ccAddresses.length - 1];
-		}
-
-		if (bccAddresses.length <= 1) {
-			bccAddress = bcc;
-		}
-		else {
-			for (int i = 0; i < (bccAddresses.length - 1); i++) {
-				bccAddress +=
-					bccAddresses[i] + StringPool.COMMA + StringPool.SPACE;
-			}
-
-			bccAddress += bccAddresses[bccAddresses.length - 1];
-		}
-
 		// Message
 
 		Message message = messagePersistence.findByPrimaryKey(messageId);
@@ -396,9 +308,9 @@ public class MessageLocalServiceImpl extends MessageLocalServiceBaseImpl {
 		message.setModifiedDate(new Date());
 		message.setFolderId(folderId);
 		message.setSender(sender);
-		message.setTo(toAddress);
-		message.setCc(ccAddress);
-		message.setBcc(bccAddress);
+		message.setTo(formatEmailAddresses(to));
+		message.setCc(formatEmailAddresses(cc));
+		message.setBcc(formatEmailAddresses(bcc));
 		message.setSentDate(sentDate);
 		message.setSubject(subject);
 		message.setPreview(getPreview(body));
@@ -416,6 +328,17 @@ public class MessageLocalServiceImpl extends MessageLocalServiceBaseImpl {
 		indexer.reindex(message);
 
 		return message;
+	}
+
+	protected String formatEmailAddresses(String address) {
+		String[] addresses = StringUtil.split(address, StringPool.COMMA);
+
+		if (addresses.length > 1) {
+			return StringUtil.merge(
+				addresses, StringPool.COMMA + StringPool.SPACE);
+		}
+
+		return address;
 	}
 
 	protected String getBody(String body) {
