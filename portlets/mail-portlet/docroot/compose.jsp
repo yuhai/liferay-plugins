@@ -56,7 +56,7 @@ else {
 		subject = LanguageUtil.format(pageContext, "re-x", replyMessage.getSubject(), false);
 	}
 	else if (messageType.equals("reply-all")) {
-		to = replyMessage.getSender() + ", " + StringUtil.replace(replyMessage.getTo(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
+		to = replyMessage.getSender() + StringPool.COMMA_AND_SPACE + StringUtil.replace(replyMessage.getTo(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
 		cc = StringUtil.replace(replyMessage.getCc(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
 		subject = LanguageUtil.format(pageContext, "re-x", replyMessage.getSubject(), false);
 	}

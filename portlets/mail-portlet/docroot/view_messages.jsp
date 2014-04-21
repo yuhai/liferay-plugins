@@ -152,11 +152,11 @@ MailManager mailManager = MailManager.getInstance(request);
 								address = StringUtil.replace(message.getTo(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
 
 								if (Validator.isNotNull(message.getCc())) {
-									address += ", " + StringUtil.replace(message.getCc(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
+									address += StringPool.COMMA_AND_SPACE + StringUtil.replace(message.getCc(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
 								}
 
 								if (Validator.isNotNull(message.getBcc())) {
-									address += ", " + StringUtil.replace(message.getBcc(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
+									address += StringPool.COMMA_AND_SPACE + StringUtil.replace(message.getBcc(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
 								}
 							}
 							else {
