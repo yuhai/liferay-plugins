@@ -102,7 +102,7 @@ MailManager mailManager = MailManager.getInstance(request);
 				<liferay-ui:message key="to" />
 			</dt>
 			<dd>
-				<%= message.getTo() %>
+				<%= StringUtil.replace(message.getTo(), StringPool.COMMA, StringPool.COMMA_AND_SPACE) %>
 			</dd>
 
 			<c:if test="<%= Validator.isNotNull(message.getCc()) %>">
@@ -110,7 +110,7 @@ MailManager mailManager = MailManager.getInstance(request);
 					<liferay-ui:message key="cc" />
 				</dt>
 				<dd>
-					<%= message.getCc() %>
+					<%= StringUtil.replace(message.getCc(), StringPool.COMMA, StringPool.COMMA_AND_SPACE) %>
 				</dd>
 
 				<dt></dt>

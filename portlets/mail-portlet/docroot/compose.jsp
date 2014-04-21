@@ -39,8 +39,8 @@ if (messageType.equals("new")) {
 else if (messageType.equals("edit")) {
 	message = MessageLocalServiceUtil.getMessage(messageId);
 
-	to = message.getTo();
-	cc = message.getCc();
+	to = StringUtil.replace(message.getTo(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
+	cc = StringUtil.replace(message.getCc(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
 	subject = message.getSubject();
 	body = message.getBody();
 }
@@ -56,8 +56,8 @@ else {
 		subject = LanguageUtil.format(pageContext, "re-x", replyMessage.getSubject(), false);
 	}
 	else if (messageType.equals("reply-all")) {
-		to = replyMessage.getSender() + ", " + replyMessage.getTo();
-		cc = replyMessage.getCc();
+		to = replyMessage.getSender() + ", " + StringUtil.replace(replyMessage.getTo(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
+		cc = StringUtil.replace(replyMessage.getCc(), StringPool.COMMA, StringPool.COMMA_AND_SPACE);
 		subject = LanguageUtil.format(pageContext, "re-x", replyMessage.getSubject(), false);
 	}
 	else if (messageType.equals("forward")) {
